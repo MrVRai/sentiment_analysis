@@ -213,6 +213,8 @@ __marimo__/
 # Ignore large raw datasets only
 artifacts/Reviews.csv
 artifacts/raw_reviews.csv
+artifacts/train.csv
+artifacts/test.csv
 
 # Ignore log files
 logs/
