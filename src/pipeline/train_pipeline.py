@@ -36,13 +36,13 @@ class TrainPipeline:
 
             # Step 3: Model Training
             logging.info("Executing Model Training...")
-            f1_score = self.model_trainer.initiate_model_trainer(
+            best_model_name,f1_score = self.model_trainer.initiate_model_trainer(
                 X_train_arr=X_train_arr,
                 y_train=y_train,
                 X_test_arr=X_test_arr,
                 y_test=y_test
             )
-            logging.info(f"Model Training completed successfully. Final F1 Score: {f1_score:.4f}")
+            logging.info(f"Model Training completed successfully. Best Model: {best_model_name} | F1 Score: {f1_score:.4f}")
             
             logging.info("--- Training Pipeline has finished successfully. ---")
             

@@ -1,47 +1,81 @@
-# Mess Food Sentiment Analysis
+# End-to-End NLP Feedback Intelligence Platform
 
-A production-ready web application to analyze the sentiment of college mess food reviews. This project comes with pre-trained models, allowing for immediate use. It classifies a user's text review as either "Positive" or "Negative" through a clean web interface built with Flask.
+A **production-style Machine Learning system** for sentiment analysis of user reviews, covering the **complete ML lifecycle** — data ingestion, NLP preprocessing, model comparison, evaluation, artifact persistence, and deployment-ready inference.
 
-## Features
+This project demonstrates **end-to-end ML engineering ownership**, from raw data to real-time predictions, with a strong focus on **reproducibility, evaluation rigor, and system design**.
 
-* **Pre-Trained & Ready to Use:** Clone the repository and run the web app instantly without needing to train the model first.
-* **Sentiment Classification:** Accurately classifies food reviews into Positive and Negative categories.
-* **Web Interface:** A simple and intuitive UI built with Flask for real-time predictions.
-* **Modular Codebase:** The project is structured with a clear separation of concerns, following best practices for production-ready applications.
-* **Complete Training Pipeline:** Includes optional scripts to re-train the model from scratch, including data ingestion, preprocessing (lemmatization, stop-word removal), and evaluation.
-* **Optimized for Performance:** The Flask application pre-loads the model into memory for instantaneous predictions.
+---
 
-## 📈 Workflow
+## 🔍 Project Overview
 
-This project is divided into two primary workflows: training and prediction.
+The system analyzes text reviews and classifies them as **Positive** or **Negative** sentiment.  
+It is designed using **modular ML pipelines**, enabling clean separation between training and inference, fair model benchmarking, and scalable deployment.
+
+The repository includes **pre-trained artifacts** for immediate use and supports **re-training from scratch** using the Amazon Fine Food Reviews dataset.
+
+---
+
+## ✨ Key Capabilities
+
+- **End-to-End ML Pipeline:** Data ingestion → transformation → model training → evaluation → inference  
+- **Model Comparison & Selection:** Benchmarks Logistic Regression and Linear SVM using F1-score, precision, and recall, and automatically selects the best-performing model  
+- **NLP-Aware Feature Engineering:** TF-IDF with lemmatization, stop-word removal, and n-grams  
+- **Reproducible Artifacts:** Persisted vectorizer and model for consistent inference  
+- **Production-Ready Inference:** Decoupled prediction pipeline with artifact loading and batch-safe inference  
+- **Web Integration:** Lightweight Flask interface for real-time predictions  
+
+---
+
+## 🧠 Machine Learning Workflow
 
 ### Training Pipeline (`train_pipeline.py`)
 
-This workflow processes the raw data and creates the final machine learning model.
+The training workflow is modular, reproducible, and evaluation-driven.
 
-1.  **Data Ingestion:** Reads the raw `Reviews.csv`, filters out neutral reviews, converts 5-star ratings into binary sentiment (Positive/Negative), and splits the data into `train.csv` and `test.csv`.
-2.  **Data Transformation:** The raw text from the train and test sets is loaded.
-3.  **Model Training:** A Scikit-learn `Pipeline` is used to:
-    * Apply text preprocessing (lemmatization, stop-word removal, n-grams).
-    * Vectorize the text data using `TfidfVectorizer`.
-    * Train a `LogisticRegression` classifier on the vectorized data.
-4.  **Artifacts Saved:** The fitted vectorizer and model are saved as `.pkl` files in the `artifacts/` folder.
+1. **Data Ingestion**
+   - Reads raw `Reviews.csv`
+   - Filters neutral (3-star) reviews
+   - Converts ratings into binary sentiment labels
+   - Performs stratified train–test split
 
-### Prediction Pipeline (`app.py`)
+2. **Data Transformation**
+   - Applies NLP preprocessing (tokenization, lemmatization, stop-word removal)
+   - Extracts TF-IDF features with uni-grams and bi-grams
 
-This workflow is executed when a user submits a review through the Flask web interface.
+3. **Model Training & Evaluation**
+   - Trains **Logistic Regression** and **Linear SVM** on the same feature space
+   - Evaluates models using **F1-score, precision, and recall**
+   - Automatically selects and persists the best-performing model
 
-1.  **App Startup:** The Flask application starts and pre-loads the `vectorizer.pkl` and `model.pkl` files into memory a single time.
-2.  **User Input:** A user enters a review into the web form and clicks "Analyze Sentiment."
-3.  **Request Handling:** The Flask backend receives the raw text.
-4.  **Prediction:** The pre-loaded vectorizer transforms the text, and the pre-loaded model predicts the sentiment.
-5.  **Response:** The predicted sentiment ("Positive" or "Negative") is sent back to the user and displayed on the web page.
+4. **Artifacts Generated**
+   - `model.pkl` – selected best model
+   - `vectorizer.pkl` – fitted TF-IDF vectorizer
+   - `model_metrics.csv` – model comparison table
+
+---
+
+### Inference Pipeline (`predict_pipeline.py`)
+
+The inference workflow is fully decoupled from training.
+
+1. Loads persisted model and vectorizer artifacts  
+2. Applies the same feature transformation used during training  
+3. Performs batch-safe prediction  
+4. Maps numerical outputs to human-readable sentiment labels  
+
+This design ensures **consistent, low-latency predictions** and safe reuse in APIs or agent-based systems.
+
+---
 
 ## 🚀 Tech Stack
 
-* **Backend:** Flask
-* **Machine Learning:** Scikit-learn, NLTK, Pandas, NumPy
-* **Language:** Python 3
+- **Language:** Python 3  
+- **Machine Learning:** Scikit-learn, NLTK  
+- **NLP:** TF-IDF, Lemmatization, n-grams  
+- **Backend:** Flask  
+- **Data Processing:** Pandas, NumPy  
+
+---
 
 ## ⚙️ Quick Start: Running the Pre-Trained Application
 
@@ -102,7 +136,7 @@ python -m src.pipeline.train_pipeline
 This process will create new, updated `vectorizer.pkl` and `model.pkl` files in your `artifacts/` folder based on the data you provided.
 
 ## 📁 Project Structure
-
+```
 ├── app.py              # Main Flask application
 ├── requirements.txt    # Project dependencies
 ├── setup.py            # Setup script for installing the project as a package
@@ -119,7 +153,7 @@ This process will create new, updated `vectorizer.pkl` and `model.pkl` files in 
 └── pipeline/
 ├── predict_pipeline.py # Prediction logic
 └── train_pipeline.py   # Script to run the training pipeline
-
+```
 
 ## 🙏 Acknowledgements
 

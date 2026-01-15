@@ -33,13 +33,30 @@ class LemmaTokenizer:
     def __init__(self):
         self.lemmatizer = WordNetLemmatizer()
         self.stop_words = set(stopwords.words('english'))
+        self.negations = {"not", "no", "never", "n't"}
     def __call__(self, doc):
         # First, tokenize the document (preserve_line=True avoids sentence tokenization)
         tokens = word_tokenize(doc.lower(), preserve_line=True)
-        # Then, lemmatize each token
-        lemmas = [self.lemmatizer.lemmatize(t) for t in tokens]
-        # Remove stop words after lemmatization
-        return [lemma for lemma in lemmas if lemma not in self.stop_words]
+        processed_tokens = []
+        negate = False
+
+        for token in tokens:
+            if token in self.negations:
+                negate = True
+                continue
+
+            lemma = self.lemmatizer.lemmatize(token)
+
+            if lemma in self.stop_words:
+                continue
+
+            if negate:
+                processed_tokens.append(f"not_{lemma}")
+                negate = False
+            else:
+                processed_tokens.append(lemma)
+
+        return processed_tokens
     
 
 

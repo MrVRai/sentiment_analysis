@@ -210,8 +210,9 @@ __marimo__/
 # --- PROJECT-SPECIFIC EXCLUSIONS ---
 # Your custom rules are preserved below
 
-# Ignore all CSV files within the artifacts folder (raw data, train, test)
-artifacts/*.csv
+# Ignore large raw datasets only
+artifacts/Reviews.csv
+artifacts/raw_reviews.csv
 
 # Ignore log files
 logs/
