@@ -1,79 +1,98 @@
 # End-to-End NLP Feedback Intelligence Platform
 
-A **production-style Machine Learning system** for sentiment analysis of user reviews, covering the **complete ML lifecycle** — data ingestion, NLP preprocessing, model comparison, evaluation, artifact persistence, and deployment-ready inference.
+A **production-style NLP system** for sentiment analysis that combines **classical machine learning and deep learning pipelines** with automated model comparison.
 
-This project demonstrates **end-to-end ML engineering ownership**, from raw data to real-time predictions, with a strong focus on **reproducibility, evaluation rigor, and system design**.
+This project demonstrates **end-to-end ML engineering ownership**, from data ingestion to training, evaluation, model selection, and deployment-ready inference, with a strong focus on **reproducibility, evaluation rigor, and system design**.
 
 ---
 
 ## 🔍 Project Overview
 
-The system analyzes text reviews and classifies them as **Positive** or **Negative** sentiment.  
-It is designed using **modular ML pipelines**, enabling clean separation between training and inference, fair model benchmarking, and scalable deployment.
+The system analyzes text reviews and classifies them as **Positive** or **Negative** sentiment using both: 
 
-The repository includes **pre-trained artifacts** for immediate use and supports **re-training from scratch** using the Amazon Fine Food Reviews dataset.
+- Classical ML models (TF-IDF + Logistic Regression / Linear SVM)
+- Deep learning models (BiLSTM / BiGRU with self-attention)
+
+A unified evaluation pipeline compares all models and automatically identifies the best-performing approach based on F1-score.
 
 ---
 
 ## ✨ Key Capabilities
 
-- **End-to-End ML Pipeline:** Data ingestion → transformation → model training → evaluation → inference  
-- **Model Comparison & Selection:** Benchmarks Logistic Regression and Linear SVM using F1-score, precision, and recall, and automatically selects the best-performing model  
-- **NLP-Aware Feature Engineering:** TF-IDF with lemmatization, stop-word removal, and n-grams  
-- **Reproducible Artifacts:** Persisted vectorizer and model for consistent inference  
-- **Production-Ready Inference:** Decoupled prediction pipeline with artifact loading and batch-safe inference  
-- **Web Integration:** Lightweight Flask interface for real-time predictions  
+- End-to-end ML pipelines (ingestion → transformation → training → evaluation)
+- Dual modeling approach: Classical ML + Deep Learning
+- Sequence modeling with embeddings, BiLSTM/BiGRU, and attention
+- Automated multi-model benchmarking
+- Cross-family model comparison (ML vs DL)
+- Best-model selection for deployment
+- Reproducible artifact generation
+- Modular, production-style codebase
+- Lightweight Flask interface for real-time predictions  
 
 ---
 
 ## 🧠 Machine Learning Workflow
 
-### Training Pipeline (`train_pipeline.py`)
+### 1️⃣ Data Ingestion
 
-The training workflow is modular, reproducible, and evaluation-driven.
-
-1. **Data Ingestion**
-   - Reads raw `Reviews.csv`
-   - Filters neutral (3-star) reviews
-   - Converts ratings into binary sentiment labels
-   - Performs stratified train–test split
-
-2. **Data Transformation**
-   - Applies NLP preprocessing (tokenization, lemmatization, stop-word removal)
-   - Extracts TF-IDF features with uni-grams and bi-grams
-
-3. **Model Training & Evaluation**
-   - Trains **Logistic Regression** and **Linear SVM** on the same feature space
-   - Evaluates models using **F1-score, precision, and recall**
-   - Automatically selects and persists the best-performing model
-
-4. **Artifacts Generated**
-   - `model.pkl` – selected best model
-   - `vectorizer.pkl` – fitted TF-IDF vectorizer
-   - `model_metrics.csv` – model comparison table
+- Loads Amazon Fine Food Reviews dataset  
+- Removes neutral (3-star) reviews  
+- Converts ratings to binary sentiment  
+- Performs stratified train–test split  
 
 ---
 
-### Inference Pipeline (`predict_pipeline.py`)
+### 2️⃣ Classical ML Pipeline
 
-The inference workflow is fully decoupled from training.
+- TF-IDF vectorization (uni-grams + bi-grams)  
+- Lemmatization and stop-word removal  
+- Logistic Regression and Linear SVM training  
+- Evaluation using F1, precision, and recall  
 
-1. Loads persisted model and vectorizer artifacts  
-2. Applies the same feature transformation used during training  
-3. Performs batch-safe prediction  
-4. Maps numerical outputs to human-readable sentiment labels  
+**Best Classical F1:** ~0.955  
 
-This design ensures **consistent, low-latency predictions** and safe reuse in APIs or agent-based systems.
+---
+
+### 3️⃣ Deep Learning Pipeline
+
+- Tokenization and sequence padding  
+- Embedding layers  
+- Bidirectional LSTM and GRU  
+- Self-attention mechanism  
+- Validation tracking during training  
+
+**Best Deep Learning F1:** ~0.98  
+
+---
+
+### 4️⃣ Model Selection
+
+- Aggregates ML and DL metrics  
+- Compares models across families  
+- Automatically selects best-performing model  
+- Saves comparison artifacts  
+
+---
+
+## 📊 Sample Results
+
+| Model | Type | F1 Score |
+|------|------|------|
+BiGRU + Attention | Deep Learning | ~0.98  
+BiLSTM + Attention | Deep Learning | ~0.98  
+Linear SVM | Classical ML | ~0.955  
+Logistic Regression | Classical ML | ~0.954  
 
 ---
 
 ## 🚀 Tech Stack
 
-- **Language:** Python 3  
-- **Machine Learning:** Scikit-learn, NLTK  
-- **NLP:** TF-IDF, Lemmatization, n-grams  
-- **Backend:** Flask  
-- **Data Processing:** Pandas, NumPy  
+- Python  
+- Scikit-learn  
+- TensorFlow / Keras  
+- NLTK  
+- Pandas / NumPy  
+- Flask (for inference UI)
 
 ---
 
@@ -92,9 +111,8 @@ cd sentiment_analysis
 python -m venv venv
 source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
 ```
-**3. Install the required packages:**
 
-The `-e .` command installs your project in "editable" mode, which is crucial for the modular structure to work correctly.
+**3. Install the required packages:**
 ```bash
 pip install -r requirements.txt
 ```
@@ -125,36 +143,50 @@ sentiment_analysis/
 ├── src/
 └── ...
 
+**3. Create a virtual environment (Recommended):**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+```
 
-**3. Run the Training Pipeline:**
+**4. Install the required packages:**
+```bash
+pip install -r requirements.txt
+```
 
-Once the dataset is in the correct location, run the training script from the **root directory** of the project.
+**5. Run classical ML Pipeline:**
 ```bash
 python -m src.pipeline.train_pipeline
 ```
 
-This process will create new, updated `vectorizer.pkl` and `model.pkl` files in your `artifacts/` folder based on the data you provided.
+**6. Run deep learning pipeline:**
+```bash
+python -m src.pipeline.dl_train_pipeline
+```
+
 
 ## 📁 Project Structure
 ```
-├── app.py              # Main Flask application
-├── requirements.txt    # Project dependencies
-├── setup.py            # Setup script for installing the project as a package
-├── templates/
-│   └── home.html       # HTML template for the UI
-├── artifacts/
-│   ├── model.pkl       # Pre-trained model
-│   └── vectorizer.pkl  # Pre-trained vectorizer
-└── src/
-├── components/     # Individual ML pipeline components
+src/
+├── components/
 │   ├── data_ingestion.py
 │   ├── data_transformation.py
-│   └── model_trainer.py
-└── pipeline/
-├── predict_pipeline.py # Prediction logic
-└── train_pipeline.py   # Script to run the training pipeline
+│   ├── model_trainer.py
+│   ├── dl_data_transformation.py
+│   ├── dl_model_trainer.py
+│   └── model_selector.py
+│
+├── pipeline/
+│   ├── train_pipeline.py
+│   └── dl_train_pipeline.py
+│
+├── utils.py
+├── logger.py
+└── exception.py
+
 ```
 
 ## 🙏 Acknowledgements
 
-A special thanks to the creators of the Amazon Fine Food Reviews dataset and the powerful op
+- Dataset: Amazon Fine Food Reviews (Kaggle)
+- Libraries: Scikit-learn, TensorFlow, NLTK
