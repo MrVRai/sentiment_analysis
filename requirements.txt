@@ -7,4 +7,8 @@ dill
 nltk
 streamlit
 flask
+torch
+torchtext
+tensorflow
+
 -e .
