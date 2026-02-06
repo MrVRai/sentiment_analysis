@@ -137,11 +137,13 @@ This project uses the "Amazon Fine Food Reviews" dataset from Kaggle.
 **2. Place the Dataset:**
 
 Place the `Reviews.csv` file inside the `artifacts/` folder. The folder structure should look like this:
+```
 sentiment_analysis/
 ├── artifacts/
 │   └── Reviews.csv  <-- The file goes here
 ├── src/
 └── ...
+```
 
 **3. Create a virtual environment (Recommended):**
 ```bash
